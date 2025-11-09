@@ -10,34 +10,25 @@
 
   <h3>Daftar Matakuliah</h3>
 
-  <table class="table table-bordered table-hover mt-3">
-    <thead style="background-color: #f2f2f2;">
-      <tr class="text-center">
-        <th>No</th>
-        <th>Kode MK</th>
-        <th>Nama Matakuliah</th>
-        <th>Jenis</th>
-        <th>SKS</th>
-        <th>Fungsi</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php $no = 1; ?>
-      <?php foreach ($data['matkul'] as $mk): ?>
-        <tr class="text-center">
-          <td><?= $no++; ?></td>
-          <td><?= $mk['kode_mk']; ?></td>
-          <td><?= $mk['nama_mk']; ?></td>
-          <td><?= $mk['jns_mk']; ?></td>
-          <td><?= $mk['sks']; ?></td>
-          <td>
-            <a href="#" class="badge badge-pill btn-secondary ml-1 tampilModalUbah" data-toggle="modal" data-target="#formModal" data-id="<?= $mk['id']; ?>">Tampil Data</a>
-            <a href="<?= BASEURL; ?>/Matakuliah/detail/<?= $mk['id']; ?>" class="badge badge-pill badge-primary ml-1">Detail</a>
-          </td>
-        </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
+  <div class="list-group mt-3">
+  <?php foreach ($data['matkul'] as $mk): ?>
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <h5 class="mb-1"><?= $mk['nama_mk']; ?></h5>
+        <small class="text-muted">
+          Kode: <?= $mk['kode_mk']; ?> |
+          Jenis: <?= $mk['jns_mk']; ?> |
+          SKS: <?= $mk['sks']; ?>
+        </small>
+      </div>
+      <div>
+        <a href="<?= BASEURL; ?>/Matakuliah/detail/<?= $mk['id']; ?>" class="badge badge-pill badge-primary ml-1">detail</a>
+        <a href="#" class="badge badge-pill badge-success tampilModalUbah" data-toggle="modal" data-target="#formModal" data-id="<?= $mk['id']; ?>">ubah</a>
+        <a href="<?= BASEURL; ?>/Matakuliah/hapus/<?= $mk['id']; ?>" class="badge badge-pill badge-danger ml-1" onclick="return confirm('Yakin ingin menghapus data ini?');">hapus</a>
+      </div>
+    </div>
+  <?php endforeach; ?>
+</div>
 </div>
 
 <!-- Modal Form -->
@@ -90,6 +81,53 @@
 <script src="<?= BASEURL; ?>/js/bootstrap.bundle.min.js"></script>
 <script>
 $(function() {
+  // Tombol Tambah
+  $('.tombolTambahData').on('click', function() {
+    $('#exampleModalLabel').html('Tambah Data Matakuliah');
+    $('.modal-footer button[type=submit]').html('Tambah Data').show();
+    $('form').attr('action', '<?= BASEURL; ?>/Matakuliah/tambah');
+    $('#id').val('');
+    $('#kode_mk').val('');
+    $('#nama_mk').val('');
+    $('#jns_mk').val('');
+    $('#sks').val('');
+    $('#kode_mk, #nama_mk, #jns_mk, #sks').prop('readonly', false).prop('disabled', false);
+  });
+
+  // Tombol Ubah
+  $(document).on('click', '.tampilModalUbah', function() {
+    $('#exampleModalLabel').html('Ubah Data Matakuliah');
+    $('.modal-footer button[type=submit]').html('Ubah Data').show();
+    $('form').attr('action', '<?= BASEURL; ?>/Matakuliah/ubah');
+
+    const id = $(this).data('id');
+
+    $.ajax({
+      url: '<?= BASEURL; ?>/Matakuliah/getUbah',
+      data: { id: id },
+      method: 'post',
+      dataType: 'json',
+      success: function(data) {
+        $('#id').val(data.id);
+        $('#kode_mk').val(data.kode_mk);
+        $('#nama_mk').val(data.nama_mk);
+        $('#jns_mk').val(data.jns_mk);
+        $('#sks').val(data.sks);
+        $('#kode_mk, #nama_mk, #jns_mk, #sks').prop('readonly', false).prop('disabled', false);
+      }
+    });
+  });
+
+  // Reset modal saat ditutup
+  $('#formModal').on('hidden.bs.modal', function () {
+    $('#exampleModalLabel').html('Tambah Data Matakuliah');
+    $('.modal-footer button[type=submit]').html('Tambah Data').show();
+    $('form').attr('action', '<?= BASEURL; ?>/Matakuliah/tambah');
+    $('#kode_mk, #nama_mk, #jns_mk, #sks').prop('readonly', false).prop('disabled', false);
+    $('form')[0].reset();
+  });
+});
+
   $('.tombolTambahData').on('click', function() {
     $('#exampleModalLabel').html('Tambah Data Matakuliah');
     $('.modal-footer button[type=submit]').html('Tambah Data');
@@ -130,7 +168,6 @@ $(function() {
     $('#kode_mk, #nama_mk, #jns_mk, #sks').prop('readonly', false).prop('disabled', false);
     $('form')[0].reset();
   });
-});
 </script>
 
 <?php require_once '../app/views/templates/footer.php'; ?>
