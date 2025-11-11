@@ -20,6 +20,7 @@
                     <a class="nav-item nav-link " href="<?php echo BASEURL; ?>/mahasiswa">Mahasiswa <span class="sr-only">(current)</span></a>
                     <a class="nav-item nav-link " href="<?php echo BASEURL; ?>/matakuliah">Mata Kuliah<span class="sr-only">(current)</span></a>
                     <a class="nav-item nav-link" href="<?php echo BASEURL; ?>/about">About</a>
+                    <a class="nav-item nav-link " href="<?php echo BASEURL; ?>/Pinjam">Peminjaman Buku<span class="sr-only">(current)</span></a>
                 </div>
             </div>
         </div>
